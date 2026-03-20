@@ -11,6 +11,7 @@ Ferramenta de referência visual para artistas e designers. Busca imagens em mú
 - 💾 **Cache inteligente** - SQLite para buscas e embeddings
 - ➕ **Carregar mais** - Continua buscando sem reiniciar a app
 - 📥 **Exportar ZIP** - Lote atual ou todo histórico
+
 ## Arquitetura
 
 ```mermaid
@@ -94,6 +95,16 @@ visual-studio-tool
 ├── ui.css                # Estilos (nova paleta azul marinho)
 └── requirements.txt      # Dependências
 ```
+## Screenshots (Pesquisando "Lobo" + "Neve")
+
+### Site
+![Imagem 1](assets/image-1.jpg)
+
+### Pesquisa
+![Imagem 2](assets/image-2.png)
+
+### Downloads
+![Imagem 3](assets/image-3.jpg)
 
 ## Instalação
 
