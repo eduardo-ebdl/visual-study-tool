@@ -11,6 +11,89 @@ Ferramenta de referência visual para artistas e designers. Busca imagens em mú
 - 💾 **Cache inteligente** - SQLite para buscas e embeddings
 - ➕ **Carregar mais** - Continua buscando sem reiniciar a app
 - 📥 **Exportar ZIP** - Lote atual ou todo histórico
+## Arquitetura
+
+```mermaid
+graph TD
+    %% Entrada do Usuário
+    UI["🎨 Interface Gradio<br/>Subject | Feature | Angle<br/>Intention | Negative"]
+
+    %% Fontes de Imagens
+    DDG["🔍 DuckDuckGo<br/>Sem API Key"]
+    UNSPLASH["🎨 Unsplash<br/>Opcional"]
+    PEXELS["📸 Pexels<br/>Opcional"]
+    PIXABAY["🖼️ Pixabay<br/>Opcional"]
+    OPENVERSE["🌐 Openverse<br/>Livre"]
+    WIKI["📚 Wikimedia<br/>Livre"]
+
+    %% Módulos de Processamento
+    UI -->|Parâmetros| QUERY["📝 Query Utils<br/>Tokenize | Normalize<br/>Expand | Build"]
+
+    QUERY -->|Query limpa| SEARCH["🔎 Search Engine<br/>Multi-source<br/>Load balance"]
+
+    DDG --> SEARCH
+    UNSPLASH --> SEARCH
+    PEXELS --> SEARCH
+    PIXABAY --> SEARCH
+    OPENVERSE --> SEARCH
+    WIKI --> SEARCH
+
+    SEARCH -->|URLs| DOWN["⬇️ Downloader<br/>Fetch | Hash<br/>Dedupe"]
+
+    DOWN -->|Imagens| CACHE["💾 Cache SQLite<br/>Search Cache<br/>Embedding Cache"]
+
+    CACHE -->|Imagens| VISION["🤖 Vision Pipeline<br/>CLIP Embeddings<br/>Ranking | Filtering"]
+
+    VISION -->|Scored Images| GALLERY["📱 Gallery State<br/>Current Batch<br/>History Manager"]
+
+    %% Saídas
+    GALLERY -->|Display| UI
+    GALLERY -->|Export| ZIP["📦 ZIP Pack<br/>Reference_Pack.zip"]
+    GALLERY -->|Logs| LOG["📊 Pretty Logger<br/>Eventos | Status"]
+
+    %% Estilo
+    classDef source fill:#e1f5e1,stroke:#2d5a2d,stroke-width:2px
+    classDef process fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef storage fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef output fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+
+    class DDG,UNSPLASH,PEXELS,PIXABAY,OPENVERSE,WIKI source
+    class QUERY,SEARCH,DOWN,VISION process
+    class CACHE storage
+    class GALLERY,ZIP,LOG output
+```
+
+## Estrutura
+
+```
+visual-studio-tool
+├── app.py                 # Entrada principal
+├── config/
+│   ├── settings.py       # Constantes e configuração
+│   ├── presets.py        # Valores padrão
+│   └── ui_options.py     # Opções de UI
+├── core/
+│   ├── search_engine.py  # Engines de busca (abstração)
+│   ├── downloaders.py    # Download de imagens
+│   ├── vision_pipeline.py # Pipeline CLIP (ranking)
+│   ├── search_pipeline.py # Orquestração da busca
+│   └── query_utils.py    # Processamento de texto
+├── ui/
+│   ├── layout.py         # Layout Gradio
+│   └── components.py     # Componentes reutilizáveis
+├── utils/
+│   ├── search_cache.py   # Cache SQLite de buscas
+│   ├── embedding_cache.py # Cache de embeddings CLIP
+│   ├── image_utils.py    # Processamento de imagens
+│   ├── file_utils.py     # Utilitários de arquivo
+│   └── pretty_logger.py  # Logging colorido
+├── tests/
+│   ├── conftest.py       # Fixtures compartilhadas
+│   ├── test_*.py         # 164 testes unitários
+│   └── test.py           # Smoke tests
+├── ui.css                # Estilos (nova paleta azul marinho)
+└── requirements.txt      # Dependências
+```
 
 ## Instalação
 
@@ -84,38 +167,6 @@ A app abre automaticamente no navegador em `http://localhost:7860`.
 6. **Buscar** - Inicia a busca
 7. **Load More** - Carrega mais resultados
 8. **Download** - Exporta como ZIP
-
-## Estrutura
-
-```
-.
-├── app.py                 # Entrada principal
-├── config/
-│   ├── settings.py       # Constantes e configuração
-│   ├── presets.py        # Valores padrão
-│   └── ui_options.py     # Opções de UI
-├── core/
-│   ├── search_engine.py  # Engines de busca (abstração)
-│   ├── downloaders.py    # Download de imagens
-│   ├── vision_pipeline.py # Pipeline CLIP (ranking)
-│   ├── search_pipeline.py # Orquestração da busca
-│   └── query_utils.py    # Processamento de texto
-├── ui/
-│   ├── layout.py         # Layout Gradio
-│   └── components.py     # Componentes reutilizáveis
-├── utils/
-│   ├── search_cache.py   # Cache SQLite de buscas
-│   ├── embedding_cache.py # Cache de embeddings CLIP
-│   ├── image_utils.py    # Processamento de imagens
-│   ├── file_utils.py     # Utilitários de arquivo
-│   └── pretty_logger.py  # Logging colorido
-├── tests/
-│   ├── conftest.py       # Fixtures compartilhadas
-│   ├── test_*.py         # 164 testes unitários
-│   └── test.py           # Smoke tests
-├── ui.css                # Estilos (nova paleta azul marinho)
-└── requirements.txt      # Dependências
-```
 
 ## Testes
 
