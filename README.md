@@ -119,7 +119,7 @@ A app abre automaticamente no navegador em `http://localhost:7860`.
 
 ## Testes
 
-### Testes unitários (recomendado)
+### Testes unitários
 
 164 testes automatizados cobrindo toda lógica:
 
@@ -149,15 +149,6 @@ python tests/test.py
 ```
 
 Usa chamadas reais de rede. Pode variar se uma fonte estiver com rate limit.
-
-## Design e UI
-
-### Redesign 2026
-
-- **Paleta azul marinho refinada** - Cores mais elegantes e contrastadas
-- **Z-index corrigido** - Menu dropdown sem sobreposição
-- **Animações suaves** - Entrada em cascata, popups, fade in
-- **Layout flexbox** - Checkboxes centralizados e responsivos
 
 ### Cores principais
 
@@ -190,10 +181,5 @@ Usa chamadas reais de rede. Pode variar se uma fonte estiver com rate limit.
 - **Sem dependências pesadas** - Usa bibliotecas leves e acessíveis
 - **Extensível** - Fácil adicionar novos engines de busca
 
-## Licença
-
-MIT - veja `LICENSE`
-
-## Contribuições
-
-Aberto a contribuições! Sinta-se à vontade para fazer fork e enviar PRs.
+---
+**Desenvolvido por [Eduardo Lima]** | [GitHub](https://github.com/eduardo-ebdl) | [LinkedIn](https://www.linkedin.com/in/eduardoebdl/)
