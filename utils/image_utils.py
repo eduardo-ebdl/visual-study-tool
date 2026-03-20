@@ -1,6 +1,6 @@
 """
 Utilitários para processamento de imagens.
-Funções helpers para manipulação, análise e export.
+Funções para manipulação, análise e exportação.
 """
 
 from PIL import Image, ImageOps
@@ -46,13 +46,13 @@ def add_podium_border(img: Image.Image, rank: int) -> Image.Image:
     Returns:
         Imagem com borda
     """
-    # Pick border color based on rank.
+    # Escolhe cor da borda baseado no ranking
     if rank in RANK_COLORS:
         color = RANK_COLORS[rank]
     else:
         color = RANK_COLORS["default"]
-    
-    # Pick border width based on rank.
+
+    # Escolhe largura da borda baseado no ranking
     if rank < 3:
         border_width = RANK_BORDER_WIDTH["podium"]
     else:
@@ -89,13 +89,13 @@ def save_image(img: Image.Image, filepath: str, quality: int = EXPORT_QUALITY) -
         True se sucesso, False se falha
     """
     try:
-        # Ensure destination exists before saving.
+        # Garante que diretório de destino existe
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        
+
         img.save(filepath, quality=quality, optimize=True)
         return True
     except Exception as e:
-        print(f"Error saving image to {filepath}: {str(e)}")
+        print(f"Erro ao salvar imagem em {filepath}: {str(e)}")
         return False
 
 def resize_image(
@@ -169,10 +169,10 @@ def is_square(img: Image.Image, tolerance: float = 0.05) -> bool:
     ratio = abs(width - height) / max(width, height)
     return ratio <= tolerance
 
-# Perceptual hash helpers for deduplication.
+# Hash perceptual para deduplicação de imagens
 def compute_image_hash(img: Image.Image, hash_size: int = 8) -> str:
     """
-    Calculate a simple average hash for quick deduplication.
+    Calcula hash simples para deduplicação rápida.
     """
     if img is None:
         return ""
@@ -183,7 +183,7 @@ def compute_image_hash(img: Image.Image, hash_size: int = 8) -> str:
 
 def images_are_similar(hash1: str, hash2: str, threshold: int = 5) -> bool:
     """
-    Compare two hashes using Hamming distance.
+    Compara dois hashes usando distância de Hamming.
     """
     if not hash1 or not hash2 or len(hash1) != len(hash2):
         return False

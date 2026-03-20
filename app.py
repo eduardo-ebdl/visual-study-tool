@@ -146,9 +146,9 @@ def _refresh_zip(scope: str, current_files: List[str], all_files: List[str]):
 
 def _view_batch(selection: str, batch_history: List[List[Tuple[str, str]]], merged_gallery: List[Tuple[str, str]]):
     """Alterna visualização entre batches de resultados."""
-    if not selection or selection == "All batches":
+    if not selection or selection == "Todos os lotes":
         return gr.update(value=merged_gallery, visible=bool(merged_gallery), selected_index=None, preview=False)
-    if selection.startswith("Batch "):
+    if selection.startswith("Lote "):
         try:
             index = int(selection.split(" ")[1]) - 1
         except (ValueError, IndexError):

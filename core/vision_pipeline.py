@@ -54,7 +54,7 @@ class VisionPipeline:
         self.secondary_window = secondary_window
         self.default_model_weights = default_model_weights or CLIP_DEFAULT_MODEL_WEIGHTS
         self.models = {}
-        # Keep lightweight in-memory caches for embeddings.
+        # Mantém cache leve em memória para embeddings
         self.text_cache = {}
         self.image_cache = {}
         self.embedding_cache_enabled = EMBEDDING_CACHE_ENABLED
@@ -65,8 +65,8 @@ class VisionPipeline:
         )
 
     def load_model(self, model_name: str):
-        """Carrega modelo CLIP (lazy loading)."""
-        # Lazy-load CLIP models to reduce startup cost.
+        """Carrega modelo CLIP sob demanda para reduzir inicialização."""
+        # Carrega modelo apenas quando necessário
         if model_name not in self.models:
             logger.info("Loading CLIP model: %s", model_name)
             self.models[model_name] = SentenceTransformer(model_name)
@@ -89,7 +89,7 @@ class VisionPipeline:
         if cache_key not in self.text_cache:
             model = self.load_model(name)
             self.text_cache[cache_key] = model.encode(text)
-            logger.debug("Cached text embedding: %s...", text[:50])
+            logger.debug("Embedding de texto em cache: %s...", text[:50])
         return self.text_cache[cache_key]
 
     def encode_texts(self, texts: List[str], model_name: Optional[str] = None) -> any:
@@ -192,7 +192,7 @@ class VisionPipeline:
         Returns:
             Tupla (imagens_válidas, urls_válidas, índices_válidos)
         """
-        # Integrity filter uses only the primary model for speed.
+        # Usa apenas modelo primário para ser rápido
         subject_emb = self.encode_text(subject, self.primary_model_name)
         negative_emb = self.encode_text(negative_prompt, self.primary_model_name)
         img_embeddings = self.encode_images(images, self.primary_model_name)
@@ -227,7 +227,7 @@ class VisionPipeline:
                 min(scores_delta), avg_delta, max(scores_delta),
             )
 
-        # Adaptive fallback to keep a minimum viable batch.
+        # Fallback adaptativo para manter um lote mínimo viável.
         min_keep = max(INTEGRITY_MIN_KEEP, int(len(images) * INTEGRITY_MIN_KEEP_RATIO))
         if len(valid_indices) < min_keep:
             logger.warning(
@@ -309,7 +309,7 @@ class VisionPipeline:
 
         weights = self._normalize_weights(model_weights or self.default_model_weights)
 
-        # Score images with the primary model.
+        # Calcula scores das imagens com o modelo primário.
         primary_scores = self._score_with_model(
             images,
             base_prompt,
@@ -324,7 +324,7 @@ class VisionPipeline:
         if secondary_weight <= 0:
             return primary_scores
 
-        # Re-score borderline cases with the secondary model and blend.
+        # Recalcula casos na faixa limítrofe com modelo secundário e mescla.
         window = secondary_window or self.secondary_window
         min_score, max_score = window
         borderline_indices = [
@@ -343,7 +343,7 @@ class VisionPipeline:
                 self.secondary_model_name,
             )
         except Exception as exc:
-            logger.warning("Secondary model failed, using primary only: %s", exc)
+            logger.warning("Modelo secundário falhou, usando apenas primário: %s", exc)
             return primary_scores
 
         primary_weight = weights.get(self.primary_model_name, 1.0)
@@ -380,7 +380,7 @@ class VisionPipeline:
         Returns:
             Lista de tags
         """
-        # Generate simple tags via text-image similarity ranking.
+        # Gera tags simples via ranking de similaridade texto-imagem.
         tech_tags = [
             "side profile", "front view", "three-quarter view",
             "close-up", "full body", "macro detail",
@@ -409,4 +409,4 @@ class VisionPipeline:
     def clear_cache(self):
         """Limpa cache de embeddings de texto."""
         self.text_cache.clear()
-        logger.info("Text embedding cache cleared")
+        logger.info("Cache de embeddings de texto limpo")

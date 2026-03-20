@@ -1,5 +1,5 @@
 """
-Lightweight SQLite cache for CLIP image embeddings.
+Cache SQLite simples para embeddings de imagem CLIP.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from typing import Optional
 from config.settings import EMBEDDING_CACHE_PATH
 
 def _connect() -> sqlite3.Connection:
-    # 1) Open embedding cache DB and ensure schema exists.
+    # 1) Abre DB de cache de embedding e garante que o schema existe.
     conn = sqlite3.connect(EMBEDDING_CACHE_PATH)
     conn.execute(
         """
@@ -25,7 +25,7 @@ def _connect() -> sqlite3.Connection:
 
 
 def get_cached_embedding(key: str):
-    # 2) Read cached embedding blob by key.
+    # 2) Lê blob de embedding em cache por chave.
     if not key:
         return None
     try:
@@ -42,7 +42,7 @@ def get_cached_embedding(key: str):
 
 
 def set_cached_embedding(key: str, value) -> None:
-    # 3) Write embedding blob by key.
+    # 3) Escreve blob de embedding por chave.
     if not key or value is None:
         return
     try:

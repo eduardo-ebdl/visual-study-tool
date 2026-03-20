@@ -1,5 +1,5 @@
 ﻿"""
-File and batch helpers for the Visual Study Tool.
+Utilitários para arquivos e lotes de imagens.
 """
 
 from typing import List, Tuple, Optional
@@ -9,8 +9,8 @@ import zipfile
 from pathlib import Path
 
 def setup_dirs(download_dir: Path, clear: bool = True) -> None:
-    """Create download directory and optionally clear residual files."""
-    # Ensure download directory exists; optionally clear previous files.
+    """Cria diretório e opcionalmente limpa arquivos residuais."""
+    # Garante que diretório existe e opcionalmente remove arquivos antigos
     os.makedirs(download_dir, exist_ok=True)
     if not clear:
         return
@@ -25,8 +25,8 @@ def setup_dirs(download_dir: Path, clear: bool = True) -> None:
 
 
 def create_zip_pack(download_dir: Path, clean_files: List[str], zip_name: str = "Reference_Pack.zip") -> Optional[str]:
-    """Create a ZIP only when there are valid files."""
-    # Build a ZIP archive for the given file list.
+    """Cria ZIP somente quando há arquivos válidos."""
+    # Constrói arquivo ZIP com os arquivos fornecidos
     if not clean_files:
         return None
     zip_path = os.path.join(download_dir, zip_name)
@@ -43,14 +43,14 @@ def build_zip_for_scope(
     current_files: List[str],
     all_files: List[str],
 ) -> Optional[str]:
-    # Choose ZIP scope (current batch vs all batches).
+    # Escolhe escopo do ZIP (lote atual ou todos os lotes)
     if scope == "All batches":
         return create_zip_pack(download_dir, all_files, zip_name="Reference_Pack_All.zip")
     return create_zip_pack(download_dir, current_files, zip_name="Reference_Pack.zip")
 
 
 def dedupe_urls(values: List[object]) -> List[str]:
-    """Return unique URL strings, skipping invalid items."""
+    """Retorna URLs únicas, ignorando itens inválidos."""
     seen = set()
     deduped = []
     for item in values or []:
@@ -68,8 +68,8 @@ def cap_gallery(
     all_files: List[str],
     max_items: int,
 ) -> Tuple[List[Tuple[str, str]], List[str]]:
-    """Cap gallery/history to keep UI responsive and disk usage bounded."""
-    # Trim oldest items and delete their files when over limit.
+    """Limita galeria para manter UI responsiva e disco otimizado."""
+    # Remove itens antigos e seus arquivos quando ultrapassa limite
     if len(gallery) <= max_items:
         return gallery, all_files
     overflow = len(gallery) - max_items
@@ -87,7 +87,7 @@ def cap_batch_history(
     history: List[List[Tuple[str, str]]],
     max_items: int,
 ) -> List[List[Tuple[str, str]]]:
-    """Cap batch history to avoid unbounded growth."""
+    """Limita histórico de lotes para evitar crescimento sem limite."""
     total = sum(len(batch) for batch in history)
     while history and total > max_items:
         removed = history.pop(0)

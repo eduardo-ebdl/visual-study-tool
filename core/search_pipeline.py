@@ -1,5 +1,5 @@
 ﻿"""
-Search pipeline and UI update helpers.
+Pipeline de busca e helpers de atualização da UI.
 """
 
 from dataclasses import dataclass
@@ -96,7 +96,7 @@ def set_ui_refs(refs: UIRefs) -> None:
 
 
 def _ui_error(message: str):
-    """Standard UI updates for errors."""
+    """Atualizações padrão de UI para erros."""
     return {
         UI.status_row: gr.update(visible=True),
         UI.welcome_col: gr.update(visible=False),
@@ -104,7 +104,7 @@ def _ui_error(message: str):
         UI.status_box: gr.update(value=message, visible=True),
         UI.mode_chip: gr.update(value="", visible=False),
         UI.btn_download: gr.update(value=None, visible=False, interactive=False),
-        UI.btn_search: gr.update(value="Generate New Set", interactive=True, visible=True),
+        UI.btn_search: gr.update(value="Gerar novo conjunto", interactive=True, visible=True),
         UI.btn_load_more: gr.update(visible=False, interactive=False),
         UI.gallery_state_comp: [],
         UI.current_batch_state_comp: [],
@@ -115,7 +115,7 @@ def _ui_error(message: str):
 
 
 def _ui_error_keep(message: str, gallery_value: List[Tuple[str, str]]):
-    """Error UI that keeps existing gallery/state (used for load more)."""
+    """UI de erro que mantém galeria/estado existente (usado para carregar mais)."""
     return {
         UI.status_row: gr.update(visible=True),
         UI.welcome_col: gr.update(visible=False),
@@ -133,7 +133,7 @@ def _ui_error_keep(message: str, gallery_value: List[Tuple[str, str]]):
 
 
 def _ui_stage(message: str):
-    """UI updates for multi-step progress during search."""
+    """Atualizações de UI para progresso em múltiplos passos durante busca."""
     return {
         UI.status_row: gr.update(visible=True),
         UI.welcome_col: gr.update(visible=False),
@@ -141,13 +141,13 @@ def _ui_stage(message: str):
         UI.status_box: gr.update(value=message, visible=True),
         UI.mode_chip: gr.update(visible=False),
         UI.btn_download: gr.update(value=None, visible=False, interactive=False),
-        UI.btn_search: gr.update(value="Loading...", interactive=False, visible=True),
+        UI.btn_search: gr.update(value="Carregando...", interactive=False, visible=True),
         UI.btn_load_more: gr.update(visible=False, interactive=False),
     }
 
 
 def ui_loading():
-    """Immediate loading state."""
+    """Estado de carregamento imediato."""
     return _ui_stage("Searching...")
 
 
@@ -171,7 +171,7 @@ def _make_last_inputs(
 
 
 def _resolve_preset_keys(selected_labels: List[str]) -> List[str]:
-    """Map UI labels to preset keys by substring match."""
+    """Mapeia labels da UI para chaves de preset por correspondência de substring."""
     keys = []
     for option in INTENTION_OPTIONS:
         label = option["label"]
@@ -187,7 +187,7 @@ def _resolve_preset_keys(selected_labels: List[str]) -> List[str]:
 
 def _mode_label(selected_labels: List[str]) -> str:
     if not selected_labels:
-        return '<span class="mode-chip-item"><span class="mode-icon">•</span><span class="mode-text">No mode</span></span>'
+        return '<span class="mode-chip-item"><span class="mode-icon">•</span><span class="mode-text">Sem modo</span></span>'
 
     icon_map = {
         "Photography (General)": "📷",
@@ -205,7 +205,7 @@ def _mode_label(selected_labels: List[str]) -> str:
 
 
 def _collect_intentions(*flags: bool) -> List[str]:
-    """Collect selected intention labels from checkbox flags."""
+    """Coleta labels de intenção selecionados dos flags de checkbox."""
     selected = []
     for flag, option in zip(flags, INTENTION_OPTIONS):
         if flag:
@@ -239,7 +239,7 @@ def search_and_process(
     batch_history_state=None,
     append_mode: bool = False,
 ):
-    """Main pipeline: search, download, score, and render results."""
+    """Pipeline principal: busca, download, score e renderiza resultados."""
     if DEPS is None or UI is None:
         raise RuntimeError("Pipeline not initialized")
 
@@ -264,36 +264,36 @@ def search_and_process(
     )
     is_art_or_3d = bool(intent_art or intent_3d)
 
-    # 1) Validate input required for search.
+    # 1) Valida entrada necessária para busca.
     if not subject:
         if append_mode:
-            yield _ui_error_keep("Subject is required.", gallery_state or [])
+            yield _ui_error_keep("Assunto é obrigatório.", gallery_state or [])
         else:
-            yield _ui_error("Subject is required.")
+            yield _ui_error("Assunto é obrigatório.")
         return
 
-    # 2) Validate intention selection (presets drive search + scoring).
+    # 2) Valida seleção de intenção (presets guiam busca + scoring).
     if not preset_labels:
         if append_mode:
-            yield _ui_error_keep("Select at least one intention.", gallery_state or [])
+            yield _ui_error_keep("Selecione pelo menos uma intenção.", gallery_state or [])
         else:
-            yield _ui_error("Select at least one intention.")
+            yield _ui_error("Selecione pelo menos uma intenção.")
         return
 
-    # 3) Prepare workspace and resolve preset keys.
+    # 3) Prepara workspace e resolve chaves de preset.
     should_clear = not append_mode and not (gallery_state or batch_history_state)
     setup_dirs(DOWNLOAD_DIR, clear=should_clear)
     start_time = time.time()
     preset_keys = _resolve_preset_keys(preset_labels)
     if not preset_keys:
         if append_mode:
-            yield _ui_error_keep("Invalid intention selection.", gallery_state or [])
+            yield _ui_error_keep("Seleção de intenção inválida.", gallery_state or [])
         else:
-            yield _ui_error("Invalid intention selection.")
+            yield _ui_error("Seleção de intenção inválida.")
         return
 
-    # 4) Search: pull a wider pool for better final ranking.
-    yield _ui_stage("Searching...")
+    # 4) Busca: puxa um pool mais amplo para melhor ranking final.
+    yield _ui_stage("Buscando...")
     generic_negatives = "-clipart -logo -icon -stock"
     lower_subject = subject.lower()
     lower_pose = pose.lower()
@@ -315,7 +315,7 @@ def search_and_process(
                     )
                     cached = get_cached_results(cache_key)
                     if cached:
-                        pretty_log("Search cache hit", "INFO")
+                        pretty_log("Cache de busca acertado", "INFO")
                         return cached, ""
                 results = active_engine.search(
                     query=query,
@@ -329,7 +329,7 @@ def search_and_process(
                 last_error = "empty"
             except Exception as e:
                 last_error = str(e)
-                pretty_log(f"Search failed: {e}", "ERROR")
+                pretty_log(f"Busca falhou: {e}", "ERROR")
             if attempt == 0:
                 time.sleep(1.2)
         return [], last_error
@@ -397,7 +397,7 @@ def search_and_process(
     title_matches = [r for r in raw_results if title_matches_subject(r.get("title", ""), subject_tokens_primary)]
     if len(title_matches) < 5 and len(subject_variants) > 1:
         for alt in subject_variants[1:]:
-            pretty_log(f"Search fallback using subject variant: {alt}", "INFO")
+            pretty_log(f"Fallback de busca usando variante de assunto: {alt}", "INFO")
             extra_results, err = _search_for_subject(alt, DuckDuckGoEngine() if (ENABLE_DDG and is_art_or_3d) else None)
             if err:
                 last_error = err
@@ -405,7 +405,7 @@ def search_and_process(
             if len(raw_results) >= SEARCH_POOL_SIZE * 2:
                 break
 
-    # 5) Deduplicate and group results by source for balanced mixing.
+    # 5) Desduplicação e agrupa resultados por origem para mistura balanceada.
     seen = set()
     search_results = []
     for r in raw_results:
@@ -435,7 +435,7 @@ def search_and_process(
             filtered = filter_photography_metadata(items, subject_tokens_list)
             if len(filtered) != len(items):
                 pretty_log(
-                    f"Metadata filter removed {len(items) - len(filtered)} items from {source}",
+                    f"Filtro de metadados removeu {len(items) - len(filtered)} itens de {source}",
                     "INFO",
                 )
             source_groups[source] = filtered
@@ -445,7 +445,7 @@ def search_and_process(
             matches = [r for r in items if title_matches_subject(r.get("title", ""), subject_tokens_list)]
             titled = [r for r in items if r.get("title")]
             if enforce_metadata_match and not matches and len(titled) >= 8:
-                pretty_log(f"Dropping source {source} (0 subject matches in metadata)", "WARN")
+                pretty_log(f"Descartando origem {source} (0 correspondências de assunto em metadados)", "WARN")
                 source_groups[source] = []
                 continue
             if matches:
@@ -487,7 +487,7 @@ def search_and_process(
         if search_results:
             random.Random(shuffle_seed).shuffle(search_results)
         pretty_log(
-            "Search source pool: " + ", ".join(f"{k}={v}" for k, v in source_counts.items()),
+            "Pool de origem de busca: " + ", ".join(f"{k}={v}" for k, v in source_counts.items()),
             "INFO",
         )
 
@@ -532,30 +532,30 @@ def search_and_process(
     if not search_results:
         if "ratelimit" in last_error.lower():
             if append_mode:
-                yield _ui_error_keep("Search rate-limited. Please try again in a moment.", gallery_state or [])
+                yield _ui_error_keep("Busca limitada por taxa. Por favor, tente novamente em um momento.", gallery_state or [])
             else:
-                yield _ui_error("Search rate-limited. Please try again in a moment.")
+                yield _ui_error("Busca limitada por taxa. Por favor, tente novamente em um momento.")
         else:
             if append_mode:
-                yield _ui_error_keep("No results found.", gallery_state or [])
+                yield _ui_error_keep("Nenhum resultado encontrado.", gallery_state or [])
             else:
-                yield _ui_error("No results found.")
+                yield _ui_error("Nenhum resultado encontrado.")
         return
 
-    # 6) Download the top N URLs for scoring.
-    yield _ui_stage("Downloading...")
+    # 6) Baixa as top N URLs para scoring.
+    yield _ui_stage("Baixando...")
     url_to_source = {r["url"]: r.get("source", "unknown") for r in search_results}
     urls = [r['url'] for r in search_results[:DOWNLOAD_BATCH_SIZE]]
     downloaded = downloader.download_batch(urls)
 
     if not downloaded:
         if append_mode:
-            yield _ui_error_keep("Download failed.", gallery_state or [])
+            yield _ui_error_keep("Download falhou.", gallery_state or [])
         else:
-            yield _ui_error("Download failed.")
+            yield _ui_error("Download falhou.")
         return
 
-    # 7) Deduplicate identical images across sources.
+    # 7) Desduplicação de imagens idênticas entre origens.
     deduped = []
     seen_hashes = []
     for img, url in downloaded:
@@ -569,8 +569,8 @@ def search_and_process(
     images_pil: List = [img for img, _ in deduped]
     final_urls: List[str] = [url for _, url in deduped]
 
-    # 8) Build prompts and run integrity filter.
-    yield _ui_stage("Scoring...")
+    # 8) Constrói prompts e executa filtro de integridade.
+    yield _ui_stage("Pontuando...")
     hard_negatives = []
     for key in preset_keys:
         hard_negatives.extend(PRESETS[key].get("hard_negatives", []))
@@ -627,7 +627,7 @@ def search_and_process(
             passed_by_source[source] = passed_by_source.get(source, 0) + 1
 
         pretty_log(
-            "Passed by source: " + ", ".join(f"{k}={v}" for k, v in passed_by_source.items()),
+            "Passou por origem: " + ", ".join(f"{k}={v}" for k, v in passed_by_source.items()),
             "INFO",
         )
 
@@ -640,15 +640,15 @@ def search_and_process(
             source_weights[source] = (1 - SOURCE_WEIGHT_ALPHA) * previous + SOURCE_WEIGHT_ALPHA * ratio
         if source_weights:
             pretty_log(
-                "Updated source weights: " + ", ".join(f"{k}={v:.2f}" for k, v in source_weights.items()),
+                "Pesos de origem atualizados: " + ", ".join(f"{k}={v:.2f}" for k, v in source_weights.items()),
                 "INFO",
             )
 
     if not valid_imgs:
         if append_mode:
-            yield _ui_error_keep("AI filtered all images.", gallery_state or [])
+            yield _ui_error_keep("IA filtrou todas as imagens.", gallery_state or [])
         else:
-            yield _ui_error("AI filtered all images.")
+            yield _ui_error("IA filtrou todas as imagens.")
         return
 
     if len(preset_keys) == 1:
@@ -686,8 +686,8 @@ def search_and_process(
             all_scores.append(preset_scores)
         scores = [max(score_set) for score_set in zip(*all_scores)]
 
-    # 9) Rank and export results.
-    yield _ui_stage("Finalizing...")
+    # 9) Rank e exporta resultados.
+    yield _ui_stage("Finalizando...")
     ranked_data = sorted(
         zip(scores, valid_imgs, valid_urls),
         key=lambda x: x[0],
@@ -731,12 +731,12 @@ def search_and_process(
 
     if not gallery_output:
         if append_mode:
-            yield _ui_error_keep("No images passed the quality threshold.", gallery_state or [])
+            yield _ui_error_keep("Nenhuma imagem passou no limiar de qualidade.", gallery_state or [])
         else:
-            yield _ui_error("No images passed the quality threshold.")
+            yield _ui_error("Nenhuma imagem passou no limiar de qualidade.")
         return
 
-    # 10) Update batch history and UI outputs.
+    # 10) Atualiza histórico de lotes e saídas de UI.
     merged_gallery = (gallery_state or []) + gallery_output
     merged_files = (all_files_state or []) + clean_files
     merged_gallery, merged_files = cap_gallery(merged_gallery, merged_files, MAX_GALLERY_ITEMS)
@@ -755,11 +755,11 @@ def search_and_process(
         UI.status_row: gr.update(visible=True),
         UI.welcome_col: gr.update(visible=False),
         UI.out_gallery: gr.update(value=merged_gallery, visible=True, selected_index=None, preview=False),
-        UI.status_box: gr.update(value=f"Found {len(gallery_output)} results in {elapsed:.1f}s", visible=True),
+        UI.status_box: gr.update(value=f"Encontrados {len(gallery_output)} resultados em {elapsed:.1f}s", visible=True),
         UI.mode_chip: gr.update(value=_mode_label(preset_labels), visible=True),
         UI.btn_download: gr.update(value=zip_path, visible=True, interactive=bool(zip_path)),
-        UI.btn_search: gr.update(value="Generate New Set", interactive=True, visible=True),
-        UI.btn_load_more: gr.update(value="Load more", interactive=True, visible=True),
+        UI.btn_search: gr.update(value="Gerar novo conjunto", interactive=True, visible=True),
+        UI.btn_load_more: gr.update(value="Carregar mais", interactive=True, visible=True),
         UI.gallery_state_comp: merged_gallery,
         UI.current_batch_state_comp: clean_files,
         UI.all_files_state_comp: merged_files,

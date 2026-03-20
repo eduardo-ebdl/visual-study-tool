@@ -42,7 +42,7 @@ class ImageDownloader:
         Returns:
             Tupla (imagem_PIL, url) ou None se falhar
         """
-        # Fetch, decode, normalize format, and optionally resize a single image.
+        # Baixa, decodifica, normaliza formato e redimensiona opcionalmente uma imagem.
         try:
             response = requests.get(url, headers=self.headers, timeout=self.timeout)
             
@@ -93,7 +93,7 @@ class ImageDownloader:
         
         pretty_log(f"Starting download of {total} images", "SYSTEM")
         
-        # Run downloads in parallel and collect successful results.
+        # Executa downloads em paralelo e coleta resultados bem-sucedidos.
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_url = {
                 executor.submit(self.download_single, url, resize_to): url 
@@ -143,7 +143,7 @@ class ImageDownloader:
         urls = [result['url'] for result in search_results]
         sources = {result['url']: result['source'] for result in search_results}
         
-        # Reuse batch downloader and reattach source metadata.
+        # Reutiliza downloader em lote e reanexa metadados de origem.
         downloaded = self.download_batch(urls, resize_to, progress_callback)
         
         results_with_source = [
@@ -154,7 +154,7 @@ class ImageDownloader:
         return results_with_source
 
 
-# Convenience helper for quick batch downloads.
+# Helper de conveniência para downloads em lote rápido.
 def download_images(
     urls: List[str],
     resize_to: Tuple[int, int] = DEFAULT_IMAGE_SIZE,

@@ -3,7 +3,7 @@ Presets de busca para diferentes tipos de estudo visual.
 Separamos o que vai para a BUSCA (DuckDuckGo) do que vai para a IA (CLIP).
 """
 
-# 1) Preset definitions used by search, filtering, and scoring.
+# 1) Definições de preset usadas por busca, filtragem e pontuação.
 PRESETS = {
     "🐾 Animal Study (Wildlife)": {
         "search_query": "wild animal photography", 
@@ -119,7 +119,7 @@ PRESETS = {
 
 def get_preset(name: str) -> dict:
     """Retorna configuração de um preset."""
-    # 2) Safe fallback if a preset key is missing.
+    # 2) Fallback seguro se uma chave de preset estiver faltando.
     if name not in PRESETS:
         return PRESETS["🔧 Debug Mode"]
     return PRESETS[name]

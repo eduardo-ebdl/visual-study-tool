@@ -1,11 +1,11 @@
 ﻿"""
-Query and text helpers for the Visual Study Tool.
+Utilitários para processamento de busca e texto.
 """
 
 from typing import List
 import re
 
-# Minimal subject expansions for better recall on niche terms.
+# Expansões mínimas para melhorar busca em termos específicos.
 SUBJECT_SYNONYMS = {
     "ocelot": ["leopardus pardalis", "neotropical cat", "wildcat"],
     "lynx": ["bobcat", "caracal"],
@@ -98,7 +98,7 @@ def build_clip_prompt(subject: str, quality_prompt: str) -> str:
 
 
 def expand_subject(subject: str) -> List[str]:
-    # Expand subject with known synonyms and dedupe ordering.
+    # Expande subject com sinônimos conhecidos e remove duplicatas.
     key = (subject or "").strip().lower()
     expansions = [subject]
     for extra in SUBJECT_SYNONYMS.get(key, []):

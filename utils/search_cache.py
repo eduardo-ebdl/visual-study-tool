@@ -10,7 +10,7 @@ from config.settings import CACHE_DIR, SEARCH_CACHE_TTL_SECONDS
 CACHE_DB = Path(CACHE_DIR) / "search_cache.sqlite"
 
 def _connect():
-    # 1) Open cache DB and ensure schema exists.
+    # 1) Abre DB de cache e garante que o schema existe.
     conn = sqlite3.connect(str(CACHE_DB))
     conn.execute(
         """
@@ -24,7 +24,7 @@ def _connect():
     return conn
 
 def make_cache_key(query: str, type_filter: Optional[str], limit: int, engine_signature: str) -> str:
-    # 2) Build a stable hash key for a search request.
+    # 2) Constrói uma chave hash estável para uma requisição de busca.
     payload = {
         "q": query,
         "t": type_filter or "",
@@ -35,7 +35,7 @@ def make_cache_key(query: str, type_filter: Optional[str], limit: int, engine_si
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 def get_cached_results(cache_key: str, ttl_seconds: int = SEARCH_CACHE_TTL_SECONDS) -> Optional[List[dict]]:
-    # 3) Read cached results and drop expired entries.
+    # 3) Lê resultados em cache e remove entradas expiradas.
     now = int(time.time())
     with _connect() as conn:
         row = conn.execute(
@@ -55,7 +55,7 @@ def get_cached_results(cache_key: str, ttl_seconds: int = SEARCH_CACHE_TTL_SECON
             return None
 
 def set_cached_results(cache_key: str, results: List[dict]) -> None:
-    # 4) Persist results to the cache store.
+    # 4) Persiste resultados no armazenamento de cache.
     now = int(time.time())
     payload = json.dumps(results)
     with _connect() as conn:

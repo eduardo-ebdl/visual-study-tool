@@ -38,7 +38,7 @@ from config.settings import (
 logger = wrap_logger(logging.getLogger(__name__))
 
 def _clean_query(query: str) -> str:
-    """Remove negative tokens for APIs that don't support advanced syntax."""
+    """Remove tokens negativos para APIs que não suportam sintaxe avançada."""
     parts = []
     for token in (query or "").split():
         if token.startswith("-"):
@@ -79,7 +79,7 @@ class SearchEngine(ABC):
         pass
 
 
-# DuckDuckGo engine (no API key).
+# Engine DuckDuckGo (sem chave de API).
 class DuckDuckGoEngine(SearchEngine):
     """Engine de busca usando DuckDuckGo."""
     
@@ -138,7 +138,7 @@ class DuckDuckGoEngine(SearchEngine):
         return self.name
 
 
-# API-backed engines (Unsplash, Pexels, Pixabay).
+# Engines com API (Unsplash, Pexels, Pixabay).
 
 class UnsplashEngine(SearchEngine):
     """Engine de busca usando Unsplash API (CP-008)."""
@@ -278,7 +278,7 @@ class PexelsEngine(SearchEngine):
         return self.name
 
 
-# Pixabay engine.
+# Engine Pixabay.
 
 class PixabayEngine(SearchEngine):
     """Engine de busca usando Pixabay API (CP-009)."""

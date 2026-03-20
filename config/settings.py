@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 def _load_env_file(path: Path) -> None:
-    """Load simple KEY=VALUE pairs from a .env file into os.environ."""
+    """Carrega pares simples KEY=VALUE de um arquivo .env para os.environ."""
     if not path.exists():
         return
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -20,7 +20,7 @@ def _load_env_file(path: Path) -> None:
         if key and key not in os.environ:
             os.environ[key] = value
 
-# 1) Paths and .env loading.
+# 1) Caminhos e carregamento de .env.
 BASE_DIR = Path(__file__).parent.parent
 
 _load_env_file(BASE_DIR / ".env")
@@ -30,12 +30,12 @@ CACHE_DIR = BASE_DIR / "cache_db"
 LOGS_DIR = BASE_DIR / "logs"
 MODELS_DIR = BASE_DIR / "models"
 
-# 2) Ensure working directories exist.
+# 2) Garante que os diretórios de trabalho existem.
 for directory in [DOWNLOAD_DIR, CACHE_DIR, LOGS_DIR, MODELS_DIR]:
     directory.mkdir(exist_ok=True, parents=True)
 
 
-# 3) AI model configuration.
+# 3) Configuração de modelo de IA.
 CLIP_PRIMARY_MODEL_NAME = "clip-ViT-B-32"
 CLIP_MODEL_NAME = CLIP_PRIMARY_MODEL_NAME
 CLIP_SECONDARY_MODEL_NAME = "clip-ViT-B-16"
@@ -51,7 +51,7 @@ YOLO_MODEL_PATH = MODELS_DIR / "yolov8n.pt"
 SPECIES_MODEL_PATH = MODELS_DIR / "species_resnet18.pth"
 
 
-# 4) Search configuration and sizing.
+# 4) Configuração de busca e dimensionamento.
 MAX_RESULTS_PER_ENGINE = 25
 
 SEARCH_POOL_SIZE = int(os.getenv("SEARCH_POOL_SIZE", "120"))
@@ -75,7 +75,7 @@ SEARCH_CACHE_TTL_SECONDS = int(os.getenv("SEARCH_CACHE_TTL_SECONDS", str(24 * 60
 EMBEDDING_CACHE_ENABLED = os.getenv("EMBEDDING_CACHE_ENABLED", "true").lower() == "true"
 EMBEDDING_CACHE_PATH = CACHE_DIR / "embeddings.sqlite"
 
-# 5) API keys and engine toggles.
+# 5) Chaves de API e alternadores de motor.
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")
 UNSPLASH_SECRET_KEY = os.getenv("UNSPLASH_SECRET_KEY", "")
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY", "")
@@ -93,7 +93,7 @@ ENABLE_DDG_QUALITY_FALLBACK = os.getenv("ENABLE_DDG_QUALITY_FALLBACK", "true").l
 DDG_MATCH_MIN = int(os.getenv("DDG_MATCH_MIN", "4"))
 
 
-# 6) Image processing defaults.
+# 6) Padrões de processamento de imagem.
 _default_size_raw = os.getenv("DEFAULT_IMAGE_SIZE", "512,512")
 try:
     _parts = [int(p.strip()) for p in _default_size_raw.split(",") if p.strip()]
@@ -111,7 +111,7 @@ EXPORT_QUALITY = 95
 ACCEPTED_FORMATS = ['RGB']
 
 
-# 7) Scoring and filtering thresholds.
+# 7) Limiares de pontuação e filtragem.
 BASE_SIMILARITY_THRESHOLD = float(os.getenv("BASE_SIMILARITY_THRESHOLD", "0.18"))
 
 INTEGRITY_MARGIN = float(os.getenv("INTEGRITY_MARGIN", "0.02"))
@@ -125,7 +125,7 @@ SCORE_DISPLAY_MULTIPLIER = float(os.getenv("SCORE_DISPLAY_MULTIPLIER", "250"))
 FEATURE_WEIGHT_MULTIPLIER = float(os.getenv("FEATURE_WEIGHT_MULTIPLIER", "1.6"))
 
 
-# 8) UI configuration.
+# 8) Configuração de UI.
 RANK_COLORS = {
     0: "#FFD700",
     1: "#C0C0C0",
@@ -141,19 +141,19 @@ RANK_BORDER_WIDTH = {
 RANK_MEDALS = ["🥇", "🥈", "🥉"]
 
 
-# 9) Cache configuration.
+# 9) Configuração de cache.
 CACHE_EXPIRATION_DAYS = 7
 
 MAX_CACHE_SIZE_MB = 500
 
 
-# 10) Logging configuration.
+# 10) Configuração de logging.
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
-# 11) Development flags.
+# 11) Flags de desenvolvimento.
 DEBUG_MODE = os.getenv("DEBUG", "False").lower() == "true"
 
 SAVE_DEBUG_IMAGES = DEBUG_MODE

@@ -5,7 +5,7 @@ Teste de todos os módulos e componentes refatorados.
 import sys
 import os
 
-# 1) Setup import paths for tests.
+# 1) Configura caminhos de importação para testes.
 test_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(test_dir)
 sys.path.insert(0, project_root)

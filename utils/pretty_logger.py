@@ -1,5 +1,5 @@
 """
-Lightweight pretty logger for console output with timezone and icons.
+Logger simples para saída de console com fuso horário e ícones.
 """
 
 from datetime import datetime, timezone, timedelta
@@ -10,7 +10,7 @@ def log(msg: str, level: str = "INFO") -> None:
     Logger padronizado para rastreabilidade de execução.
     Formato: [YYYY-MM-DD HH:MM:SS] [LEVEL] Icon Mensagem
     """
-    # 1) Emit timestamped log with level icon.
+    # 1) Emite log com timestamp e ícone de nível.
     tz_br = timezone(timedelta(hours=-3))
     timestamp = datetime.now(tz_br).strftime("%Y-%m-%d %H:%M:%S")
     icons = {
@@ -27,7 +27,7 @@ def log(msg: str, level: str = "INFO") -> None:
 
 
 def _format_message(msg, args) -> str:
-    # 2) Apply printf-style formatting if args were provided.
+    # 2) Aplica formatação estilo printf se argumentos foram fornecidos.
     if not args:
         return str(msg)
     try:
@@ -39,9 +39,9 @@ def _format_message(msg, args) -> str:
 
 def wrap_logger(logger):
     """
-    Redirect common logger calls to pretty log output.
+    Redireciona chamadas comuns de logger para saída de log bonito.
     """
-    # 3) Replace logger methods with pretty logger functions.
+    # 3) Substitui métodos de logger por funções de logger bonito.
     def _make(level: str):
         def _log(msg, *args, **kwargs):
             log(_format_message(msg, args), level)

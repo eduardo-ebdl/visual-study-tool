@@ -1,5 +1,5 @@
 ﻿"""
-Gradio layout builder for the Visual Study Tool.
+Construtor de layout Gradio para a Visual Study Tool.
 """
 
 import gradio as gr
@@ -10,7 +10,7 @@ from ui.components import label_with_tip
 def build_layout(css: str, theme: gr.themes.Base):
     with gr.Blocks(title="Visual Study Tool") as demo:
         with gr.Row(elem_id="main-layout"):
-            # 1) Sidebar inputs and actions.
+            # 1) Entradas da barra lateral e ações.
             with gr.Column(elem_id="sidebar", scale=0):
                 gr.Markdown(
                     """
@@ -21,36 +21,36 @@ def build_layout(css: str, theme: gr.themes.Base):
                     """
                 )
 
-                # 2) Subject input.
+                # 2) Entrada de assunto.
                 label_with_tip(
-                    "Subject",
-                    "Main subject. Example: wolf knight, cyberpunk runner."
+                    "Assunto",
+                    "Assunto principal. Exemplo: cavaleiro lobo, corredor cyberpunk."
                 )
                 inp_subject = gr.Textbox(
                     label=None,
                     show_label=False,
-                    placeholder="e.g. Wolf Knight",
+                    placeholder="ex: Cavaleiro Lobo",
                     lines=1,
                     elem_classes="field-input"
                 )
 
-                # 3) Feature input.
+                # 3) Entrada de características.
                 label_with_tip(
-                    "Feature",
-                    "Optional. Used to prioritize results (pose, action, or visual traits). Example: side profile, full body."
+                    "Características",
+                    "Opcional. Usado para priorizar resultados (pose, ação ou traços visuais). Exemplo: perfil lateral, corpo inteiro."
                 )
                 inp_pose = gr.Textbox(
                     label=None,
                     show_label=False,
-                    placeholder="e.g. Standing, side profile",
+                    placeholder="ex: De pé, perfil lateral",
                     lines=1,
                     elem_classes="field-input"
                 )
 
-                # 4) View angle selector.
+                # 4) Seletor de ângulo de visualização.
                 label_with_tip(
-                    "View Angle",
-                    "Optional. Guides camera/view angle. Examples: front, side, 3/4, top."
+                    "Ângulo de Visão",
+                    "Opcional. Guia ângulo de câmera/visualização. Exemplos: frontal, lateral, 3/4, de cima."
                 )
                 inp_angle = gr.Dropdown(
                     choices=[item["label"] for item in ANGLE_OPTIONS],
@@ -61,10 +61,10 @@ def build_layout(css: str, theme: gr.themes.Base):
                     elem_classes=["field-input", "angle-dropdown"],
                 )
 
-                # 5) Intention selection.
+                # 5) Seleção de intenção.
                 label_with_tip(
-                    "Intention",
-                    "Choose at least one category. These define the source style."
+                    "Intenção",
+                    "Escolha pelo menos uma categoria. Estas definem o estilo da origem."
                 )
                 with gr.Column(elem_id="intention-select"):
                     intent_checks = []
@@ -82,51 +82,51 @@ def build_layout(css: str, theme: gr.themes.Base):
                                 elem_classes="intent-tooltip-wrap"
                             )
 
-                # 6) Negative terms input.
+                # 6) Entrada de termos negativos.
                 label_with_tip(
-                    "Negative",
-                    "Optional. Exclude terms you don't want. Example: blur, watermark, logo.",
+                    "Negativas",
+                    "Opcional. Exclua termos que você não quer. Exemplo: desfocado, marca d'água, logo.",
                     optional=True
                 )
                 inp_impostors = gr.Textbox(
                     label=None,
                     show_label=False,
-                    placeholder="What to avoid (optional)",
+                    placeholder="O que evitar (opcional)",
                     lines=1,
                     max_lines=1,
                     elem_classes=["field-input", "field-optional"]
                 )
 
-                # 7) Primary actions.
+                # 7) Ações primárias.
                 with gr.Row(elem_id="actions-row"):
-                    btn_search = gr.Button("Generate New Set", elem_id="btn-search")
-                    btn_download = gr.DownloadButton("Export ZIP ⬇️", elem_id="btn-download", visible=False)
+                    btn_search = gr.Button("Gerar novo conjunto", elem_id="btn-search")
+                    btn_download = gr.DownloadButton("Exportar ZIP ⬇️", elem_id="btn-download", visible=False)
 
                 label_with_tip(
-                    "ZIP Scope",
-                    "Choose whether to export only the latest batch or everything loaded.",
+                    "Escopo do ZIP",
+                    "Escolha se deseja exportar apenas o lote mais recente ou tudo carregado.",
                     optional=True
                 )
                 zip_scope = gr.Radio(
-                    choices=["Current batch", "All batches"],
-                    value="Current batch",
+                    choices=["Lote atual", "Todos os lotes"],
+                    value="Lote atual",
                     show_label=False,
                     elem_classes="field-input",
                 )
 
                 label_with_tip(
-                    "View Batch",
-                    "Switch between previous batches or view all results.",
+                    "Visualizar Lote",
+                    "Alterne entre lotes anteriores ou veja todos os resultados.",
                     optional=True
                 )
                 batch_selector = gr.Dropdown(
-                    choices=["All batches"],
-                    value="All batches",
+                    choices=["Todos os lotes"],
+                    value="Todos os lotes",
                     show_label=False,
                     elem_classes="field-input",
                 )
 
-            # 8) Main content panel (status + gallery).
+            # 8) Painel de conteúdo principal (status + galeria).
             with gr.Column(elem_id="content-area"):
 
                 with gr.Row(elem_id="results-status", visible=False) as status_row:
@@ -147,19 +147,19 @@ def build_layout(css: str, theme: gr.themes.Base):
                     elem_id="gallery-grid"
                 )
 
-                btn_load_more = gr.Button("Load more", elem_id="btn-load-more", visible=False)
+                btn_load_more = gr.Button("Carregar mais", elem_id="btn-load-more", visible=False)
 
                 with gr.Column(elem_classes="welcome-box", visible=False) as welcome_col:
                     gr.HTML(
                         """
                         <div class="welcome-hero">
-                            <div class="welcome-title">Build a clean visual study set</div>
+                            <div class="welcome-title">Construa um conjunto de estudo visual limpo</div>
                             <div class="welcome-sub">
-                                Start with a subject, add a feature, then refine with an intention.
+                                Comece com um assunto, adicione características, depois refine com uma intenção.
                             </div>
                         </div>
                         <div class="welcome-sub" style="margin-bottom: 6px;">
-                            Try: <span style="color:#cfe0ff;">wolf samurai</span>, <span style="color:#cfe0ff;">incineroar</span>, <span style="color:#cfe0ff;">snow wolf</span>
+                            Tente: <span style="color:#cfe0ff;">lobo samurai</span>, <span style="color:#cfe0ff;">incineroar</span>, <span style="color:#cfe0ff;">lobo da neve</span>
                         </div>
                         <div class="skeleton-grid">
                             <div class="skeleton-card"></div>
